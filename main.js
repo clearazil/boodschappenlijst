@@ -4,7 +4,6 @@ let quantityUpButtons = document.querySelectorAll('.quantity-up-button');
 let quantityDownButtons = document.querySelectorAll('.quantity-down-button');
 
 /**
- * 
  * @param {HTMLElement} trElement 
  * @returns {object}
  */
@@ -16,7 +15,6 @@ function getProductInfo(trElement) {
 }
 
 /**
- * 
  * @param {HTMLElement} trElement 
  * @param {object} priceValues
  * @returns {object}
@@ -31,9 +29,9 @@ let shoppingCart = {
     products: {},
 
     /**
-     * 
      * @param {object} productInfo 
-     * @param {int} quantityChange 
+     * @param {int} quantityChange
+     * @returns {object}
      */
     getNewPriceValues(productInfo, quantityChange) {
         let productId = productInfo.productId;
@@ -72,6 +70,9 @@ let shoppingCart = {
         }
     },
 
+    /**
+     * @returns {float}
+     */
     getTotalCost() {
         let totalPrice = 0;
 
