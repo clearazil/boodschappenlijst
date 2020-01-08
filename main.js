@@ -27,34 +27,35 @@ function setProductInfo(trElement, priceValues) {
     document.querySelector('#total-cost').textContent = priceValues.totalCost;
 }
 
-// floats in javascript are not accurate: https://www.w3schools.com/js/js_numbers.asp
-console.log(1.2 * 3); // returns 3.5999999999999996 (should be 3.6)
-
 let shoppingCart = {
-    products: {
+    products: {},
 
-    },
-    totalPrice: 0,
+    /**
+     * 
+     * @param {object} productInfo 
+     * @param {int} quantityChange 
+     */
     getNewPriceValues(productInfo, quantityChange) {
         let productId = productInfo.productId;
         let product = this.products[productId];
 
-        //console.log(productInfo);
-        //console.log(this.products);
-        //console.log(product);
+        // check if a product is already in the cart
         if (product !== undefined) {
-            
-
             let productPrice = this.products[productId].price;
             let oldQuantity = this.products[productId].quantity;
             let newQuantity = oldQuantity + quantityChange;
 
-            console.log(productPrice);
-            console.log(newQuantity);
             // prevent setting quantity or price to a value lesser than 0
             this.products[productId].quantity = newQuantity >= 0 ? newQuantity : 0;
-            this.products[productId].totalPrice = newQuantity >= 0 ? (newQuantity * productPrice) : 0;
-            console.log(this.products[productId]);
+
+            let newProductPrice = 0;
+            if (newQuantity >= 0) {
+                // floats in javascript are not accurate: https://www.w3schools.com/js/js_numbers.asp
+                newProductPrice = (newQuantity * (productPrice * 10)) / 10;
+                // round the number to 2 decimals
+                newProductPrice = Math.round(newProductPrice * 100) / 100;
+            }
+            this.products[productId].totalPrice = newProductPrice;
         } else {
             this.products[productId] = {
                 price: productInfo.productPrice,
@@ -64,17 +65,25 @@ let shoppingCart = {
             };
         }
 
-
-
         return {
             productQuantity: this.products[productId].quantity,
             productTotalCost: this.products[productId].totalPrice,
-            totalCost: 1
+            totalCost: this.getTotalCost()
         }
+    },
+
+    getTotalCost() {
+        let totalPrice = 0;
+
+        Object.values(this.products).forEach((product) => {
+            // multiply and divide by 10 for semi-accurate floats
+            totalPrice += (product.quantity * (product.price * 10)) / 10;
+        });
+
+        // round to 2 decimals
+        return Math.round(totalPrice * 100) / 100;
     }
 }
-
-
 
 quantityUpButtons.forEach((button) => {
     button.onclick = () => {
@@ -85,9 +94,6 @@ quantityUpButtons.forEach((button) => {
         setProductInfo(tr, priceValues);
     };
 });
-
-
-
 
 quantityDownButtons.forEach((button) => {
     button.onclick = () => {
