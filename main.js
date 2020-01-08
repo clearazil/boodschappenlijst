@@ -1,7 +1,6 @@
 "use strict";
 
-let quantityUpButtons = document.querySelectorAll('.quantity-up-button');
-let quantityDownButtons = document.querySelectorAll('.quantity-down-button');
+let quantityButtons = document.querySelectorAll('.quantity-up-button, .quantity-down-button');
 
 /**
  * @param {HTMLElement} trElement 
@@ -86,22 +85,14 @@ let shoppingCart = {
     }
 }
 
-quantityUpButtons.forEach((button) => {
+// gebruik bij voorkeur 1 functie om aantallen te verhogen en te verlagen, kan d.m.v. HTML5 data- custom attribuut
+quantityButtons.forEach((button) => {
     button.onclick = () => {
+        let amount = parseInt(button.getAttribute('data-amount'));
         let tr = button.closest('tr');
-
+    
         let productInfo = getProductInfo(tr);
-        let priceValues = shoppingCart.getNewPriceValues(productInfo, 1);
+        let priceValues = shoppingCart.getNewPriceValues(productInfo, amount);
         setProductInfo(tr, priceValues);
-    };
-});
-
-quantityDownButtons.forEach((button) => {
-    button.onclick = () => {
-        let tr = button.closest('tr');
-
-        let productInfo = getProductInfo(tr);
-        let priceValues = shoppingCart.getNewPriceValues(productInfo, -1);
-        setProductInfo(tr, priceValues);
-    };
+    };;
 });
